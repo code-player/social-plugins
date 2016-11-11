@@ -1,0 +1,16 @@
+{% extends "main.html" %}
+{% block body %}
+	{% if not session.logged_in %}
+	<div align="center">
+		<h2><b>Log in with :</b><br/></h2>
+		<a href="/facebook/login"><img style="border-radius:50%" src="{{url_for('static',filename='images/facebook.jpg')}}" width=250 height=250/></a>
+		<a href="/google/login"><img style="border-radius:50%" src="{{url_for('static',filename='images/google.png')}}" width=250 height=250/></a>
+	</div>
+	{% else %}
+	<a href="/logout"><button style="float:right">Logout</button></a>
+	Logged in with {{ session.with }} as :<br/>
+		{% for a in user_info %}
+			{{ a }} : {{ user_info[a] }}<br/>
+		{% endfor %}
+	{% endif %}
+{% endblock %}
