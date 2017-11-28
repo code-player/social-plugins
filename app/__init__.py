@@ -10,20 +10,20 @@ app.secret_key='dfgkjzbvjxnvlndnksvjnkxvbjxnvkbvjnkv'
 facebook = OAuth2Service(name='facebook',
                          authorize_url='https://www.facebook.com/dialog/oauth',
                          access_token_url='https://graph.facebook.com/oauth/access_token',
-                         client_id='your-client-id',
-                         client_secret='your-client-secret',
+                         client_id='1749530795331028',
+                         client_secret='7199b7eede3307ac31c5904311ea3ae2',
                          base_url='https://graph.facebook.com/')
 google = OAuth2Service(name='google',
                          authorize_url='https://accounts.google.com/o/oauth2/auth',
                          access_token_url='https://accounts.google.com/o/oauth2/token',
-                         client_id='your-client-id',
-                         client_secret='your-client-secret',
+                         client_id='224959459599-na42re763nq6pejde7gakrdvtp1vvmnu.apps.googleusercontent.com',
+                         client_secret='6-Apc2roCR23wlgoS-HaJ8bA',
                          base_url='https://googleapis.com/oauth2/v1/')
 linkedin = OAuth2Service(name               = 'linkedin',
                         authorize_url       = 'https://www.linkedin.com/uas/oauth2/authorization',
                         access_token_url    = 'https://www.linkedin.com/uas/oauth2/accessToken',
-                        client_id           = 'your-client-id',
-                        client_secret       = 'your-client-secret',
+                        client_id           = '78aao1b95j83as',
+                        client_secret       = 'mISU2ZuNBaIN8DZ2',
                         base_url            = 'https://api.linkedin.com/v1/')
 @app.route('/')
 def home():
@@ -58,14 +58,15 @@ def fb_authorized():
     redirect_uri = url_for('fb_authorized', _external=True)
     data = dict(code=request.args['code'], redirect_uri=redirect_uri)
 
-    fb_session = facebook.get_auth_session(data=data)
+    fb_session = facebook.get_raw_access_token(data=data)
+    fb_session = fb_session.json()
     
     # the "me" response
     # me = fb_session.get('me').json()
     
     session['logged_in']=True
     session['with']='facebook'
-    session['token']=fb_session.access_token
+    session['token']=fb_session['access_token']
     
     c  = httplib.HTTPSConnection("graph.facebook.com")
     c.request("GET", "/me?access_token="+session.get('token')+"&fields=name,email,gender,first_name,last_name,link")
@@ -153,4 +154,4 @@ def linkedin_authorized():
     
 if __name__ == "__main__":
     app.debug=True
-    app.run()
+    app.run(host='127.0.0.1', port=5000)
